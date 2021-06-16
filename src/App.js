@@ -3,6 +3,7 @@ import React from 'react';
 import './App.css';
 import Shelves from './shelves';
 import Search from './search';
+import { Route } from 'react-router-dom';
 
 class BooksApp extends React.Component {
 	state = {
@@ -14,19 +15,12 @@ class BooksApp extends React.Component {
 		 */
 		showSearchPage: false,
 	};
-	switchPage = () => {
-		this.setState((currentState) => ({
-			showSearchPage: !currentState.showSearchPage,
-		}));
-	};
+
 	render() {
 		return (
 			<div className="app">
-				{this.state.showSearchPage ? (
-					<Search switchPage={this.switchPage} />
-				) : (
-					<Shelves switchPage={this.switchPage} />
-				)}
+				<Route path="/search" component={Search} />
+				<Route exact path="/" component={Shelves} />
 			</div>
 		);
 	}
