@@ -19,7 +19,12 @@ class Shelves extends Component {
 				</div>
 				<div className="list-books-content">
 					{this.shelves.map((shielf) => (
-						<Shielf key={shielf.id} shielf={shielf} books={this.props.books} />
+						<Shielf
+							key={shielf.id}
+							shielf={shielf}
+							books={this.props.books}
+							bookShelfChange={this.props.bookShelfChange}
+						/>
 					))}
 					<div />
 				</div>

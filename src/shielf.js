@@ -11,7 +11,11 @@ class Shielf extends Component {
 						{this.props.books
 							.filter((book) => book.shelf === this.props.shielf.id)
 							.map((book) => (
-								<Book key={book.id} book={book} />
+								<Book
+									key={book.id}
+									book={book}
+									bookShelfChange={this.props.bookShelfChange}
+								/>
 							))}
 					</ol>
 				</div>

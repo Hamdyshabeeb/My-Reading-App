@@ -3,7 +3,6 @@ import noThumbnail from './icons/noThumbnail.png';
 
 class Book extends Component {
 	render() {
-		console.log(this.props.book);
 		return (
 			<li>
 				<div className="book">
@@ -21,7 +20,12 @@ class Book extends Component {
 							}}
 						/>
 						<div className="book-shelf-changer">
-							<select>
+							<select
+								onChange={(e) =>
+									this.props.bookShelfChange(this.props.book, e.target.value)
+								}
+								value={this.props.book.shelf ? this.props.book.shelf : 'none'}
+							>
 								<option value="move" disabled>
 									Move to...
 								</option>
