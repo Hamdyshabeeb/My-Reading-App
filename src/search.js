@@ -14,13 +14,13 @@ class Search extends Component {
 		this.setState((currentState) => ({ searchBooks: [] }));
 	};
 	/**
-	 * @description handel Searching books from server
-	 * @param {FormEvent} e
+	 * @description handel Searching books from server(debounced using lodash)
+	 * @param {FormEvent} eve
 	 */
-	searchBooks = (eve) => {
+	searchBooks = debounce((eve) => {
 		//search value from the search input
 		const searchQuery = eve.target.value.trim();
-
+		console.log(searchQuery);
 		if (searchQuery && searchQuery.length > 0) {
 			BooksAPI.search(searchQuery).then((searchResult) => {
 				if (searchResult && !searchResult.error) {
@@ -46,18 +46,26 @@ class Search extends Component {
 			//if searchQuery is empty reset the state
 			this.resetSearch();
 		}
-	};
+	}, 500);
 	render() {
-		console.log(this.state.searchBooks.length);
 		return (
 			<div className="search-books">
 				<div className="search-books-bar">
-					<Link to="/" className="close-search" onClick={this.resetSearch}>
+					<Link
+						to="/"
+						className="close-search"
+						onClick={(eve) => {
+							this.resetSearch(eve);
+						}}
+					>
 						Close
 					</Link>
 					<div className="search-books-input-wrapper">
 						<input
-							onChange={this.searchBooks}
+							onChange={(eve) => {
+								eve.persist();
+								this.searchBooks(eve);
+							}}
 							type="text"
 							placeholder="Search by title or author"
 						/>
