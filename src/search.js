@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 import Book from './book';
-
+import { debounce } from 'lodash';
 class Search extends Component {
 	state = {
 		searchBooks: [],
@@ -11,15 +11,15 @@ class Search extends Component {
 	 * @description used to reset searchBooks to its intial value
 	 */
 	resetSearch = () => {
-		this.setState({ searchBooks: [] });
+		this.setState((currentState) => ({ searchBooks: [] }));
 	};
 	/**
 	 * @description handel Searching books from server
 	 * @param {FormEvent} e
 	 */
-	searchBooks = (e) => {
+	searchBooks = (eve) => {
 		//search value from the search input
-		const searchQuery = e.target.value;
+		const searchQuery = eve.target.value.trim();
 
 		if (searchQuery && searchQuery.length > 0) {
 			BooksAPI.search(searchQuery).then((searchResult) => {
@@ -35,7 +35,11 @@ class Search extends Component {
 							}
 						});
 					});
-					this.setState({ searchBooks: searchResult });
+
+					this.setState((currentState) => ({ searchBooks: searchResult }));
+				} else {
+					//if no search result or search result contain error
+					this.resetSearch();
 				}
 			});
 		} else {
@@ -44,21 +48,14 @@ class Search extends Component {
 		}
 	};
 	render() {
+		console.log(this.state.searchBooks.length);
 		return (
 			<div className="search-books">
 				<div className="search-books-bar">
-					<Link to="/" className="close-search">
+					<Link to="/" className="close-search" onClick={this.resetSearch}>
 						Close
 					</Link>
 					<div className="search-books-input-wrapper">
-						{/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
 						<input
 							onChange={this.searchBooks}
 							type="text"
@@ -68,15 +65,14 @@ class Search extends Component {
 				</div>
 				<div className="search-books-results">
 					<ol className="books-grid">
-						{(this.state.searchBooks.length > 0 &&
+						{this.state.searchBooks.length > 0 &&
 							this.state.searchBooks.map((book) => (
 								<Book
 									key={book.id}
 									book={book}
 									bookShelfChange={this.props.bookShelfChange}
 								/>
-							))) ||
-							console.log(this.state.searchBooks.length)}
+							))}
 					</ol>
 				</div>
 			</div>
